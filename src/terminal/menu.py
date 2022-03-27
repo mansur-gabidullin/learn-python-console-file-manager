@@ -24,7 +24,8 @@ def select_action(actions):
 
         if 0 < choice <= actions_count:
             selected_action = actions[choice - 1]
-        else:
-            print(MESSAGE_WRONG_ACTION_CHOICE)
+            continue
+
+        print(MESSAGE_WRONG_ACTION_CHOICE)
 
     return selected_action
