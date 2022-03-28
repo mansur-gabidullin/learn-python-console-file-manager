@@ -24,7 +24,7 @@ def run(terminal=src.terminal, default_actions=get_default_actions(), journal=No
     if journal is None:
         journal = [(INITIAL_AMOUNT, DESCRIPTION_OPEN)]
 
-    terminal.run(inject_log_to_actions(default_actions, journal))
+    terminal.run(inject_journal_to_actions(default_actions, journal))
 
 
 if __name__ == '__main__':

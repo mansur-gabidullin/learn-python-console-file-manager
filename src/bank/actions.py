@@ -57,5 +57,5 @@ def history(journal):
     print(remaining_amount)
 
 
-def inject_log_to_actions(actions, journal):
+def inject_journal_to_actions(actions, journal):
     return tuple((description, wrap(handler, journal)) for description, handler in actions)
