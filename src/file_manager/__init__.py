@@ -11,7 +11,7 @@ MENU_POINT_QUIZ = 'играть в викторину'
 MENU_POINT_BANK = 'мой банковский счет'
 
 
-def run(terminal=src.terminal, extra_actions=get_default_actions()):
+def run(terminal=src.terminal, extra_actions=()):
     terminal.run(get_default_actions() + extra_actions)
 
 

@@ -15,7 +15,7 @@ def __stop():
 
 def run(actions=()):
     running = True
-    menu_actions = actions + ((MENU_POINT_EXIT, __stop),)
+    menu_actions = ((MENU_POINT_EXIT, __stop),) + actions
 
     while running:
         print_menu(menu_actions)

@@ -9,7 +9,7 @@ QUESTION_CHOICE = 'Выберите пункт меню: '
 
 def print_menu(actions):
     print()
-    for i, action in enumerate(actions, 1):
+    for i, action in enumerate(actions):
         print(FORMAT_PATTERN_MENU_ITEM.format(i, action[0]))
 
 
@@ -22,8 +22,8 @@ def select_action(actions):
         choice = input(QUESTION_CHOICE)
         choice = int(choice) if choice != '' else 0
 
-        if 0 < choice <= actions_count:
-            selected_action = actions[choice - 1]
+        if 0 <= choice < actions_count:
+            selected_action = actions[choice]
             continue
 
         print(MESSAGE_WRONG_ACTION_CHOICE)
