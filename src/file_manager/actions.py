@@ -20,12 +20,12 @@ ROOT_PATH = os.path.normpath(
 
 DEVELOPER = 'Мансур Габидуллин'
 
-__ignored_files = ['README.md', '.gitignore']
+ignored_files = ['README.md', '.gitignore']
 
 
-def __view(show_directories=True, show_files=True):
+def view(show_directories=True, show_files=True):
     content = filter(
-        lambda file: file not in __ignored_files,
+        lambda file: file not in ignored_files,
         os.listdir(ROOT_PATH)
     )
 
@@ -44,7 +44,7 @@ def __view(show_directories=True, show_files=True):
     print(tuple(content))
 
 
-def __create_file():
+def create_file():
     name = ask_user('Укажите имя файла: ')
 
     if not name:
@@ -56,7 +56,7 @@ def __create_file():
         f.write(content)
 
 
-def __read_file():
+def read_file():
     name = ask_user('Укажите имя файла: ')
 
     if not name:
@@ -66,7 +66,7 @@ def __read_file():
         print(f.read())
 
 
-def __create_dir():
+def create_dir():
     name = ask_user('Укажите имя папки: ')
 
     if not name:
@@ -78,7 +78,7 @@ def __create_dir():
         os.makedirs(directory)
 
 
-def __remove():
+def remove():
     path = ask_user('Укажите путь к папке или файлу: ')
 
     if not path:
@@ -107,7 +107,7 @@ def __remove():
         shutil.rmtree(path)
 
 
-def __copy():
+def copy():
     path_from, path_to, is_file, is_dir = ask_paths(
         'Укажите путь к папке или файлу, для копирования: ',
         'Укажите путь, куда вы хотите скопировать: ',
@@ -124,24 +124,9 @@ def __copy():
     shutil.copytree(path_from, path_to)
 
 
-def __info(show_platform=True, show_developer=True):
+def info(show_platform=True, show_developer=True):
     if show_platform:
         print(sys.platform)
 
     if show_developer:
         print(DEVELOPER)
-
-
-def get_default_actions():
-    return (
-        ('просмотр содержимого рабочей директории', __view),
-        ('посмотреть только папки', lambda: __view(show_files=False)),
-        ('посмотреть только файлы', lambda: __view(show_directories=False)),
-        ('посмотреть содержимое файла', __read_file),
-        ('создать файл', __create_file),
-        ('создать папку', __create_dir),
-        ('удалить (файл/папку)', __remove),
-        ('копировать (файл/папку)', __copy),
-        ('просмотр информации об операционной системе', lambda: __info(show_developer=False)),
-        ('создатель программы', lambda: __info(show_platform=False)),
-    )

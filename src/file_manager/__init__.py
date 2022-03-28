@@ -2,13 +2,23 @@
 Главный модуль Консольного файлового менеджера
 """
 
-import src.bank
-import src.quiz
 import src.terminal
-from src.file_manager.actions import get_default_actions
+from src.file_manager.actions import *
 
-MENU_POINT_QUIZ = 'играть в викторину'
-MENU_POINT_BANK = 'мой банковский счет'
+
+def get_default_actions():
+    return (
+        ('просмотр содержимого рабочей директории', view),
+        ('посмотреть только папки', lambda: view(show_files=False)),
+        ('посмотреть только файлы', lambda: view(show_directories=False)),
+        ('посмотреть содержимое файла', read_file),
+        ('создать файл', create_file),
+        ('создать папку', create_dir),
+        ('удалить (файл/папку)', remove),
+        ('копировать (файл/папку)', copy),
+        ('просмотр информации об операционной системе', lambda: info(show_developer=False)),
+        ('создатель программы', lambda: info(show_platform=False)),
+    )
 
 
 def run(terminal=src.terminal, extra_actions=()):
@@ -16,4 +26,4 @@ def run(terminal=src.terminal, extra_actions=()):
 
 
 if __name__ == '__main__':
-    run(extra_actions=((MENU_POINT_QUIZ, src.quiz.run), (MENU_POINT_BANK, src.bank.run)))
+    run()
