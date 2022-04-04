@@ -34,7 +34,7 @@ def run(
         journal=None,
         default_actions=None,
         terminal=None,
-        terminal_helpers=None,
+        terminal_utils=None,
         check_is_running=None
 ):
     if default_actions is None:
@@ -51,7 +51,7 @@ def run(
 
     terminal.run(
         __inject_journal_to_actions(default_actions + extra_actions, journal),
-        helpers=terminal_helpers,
+        utils=terminal_utils,
         check_is_running=check_is_running
     )
 
