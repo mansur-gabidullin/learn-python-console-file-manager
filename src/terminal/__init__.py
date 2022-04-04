@@ -13,11 +13,7 @@ def __stop(terminal):
     terminal.to_terminal(__MESSAGE_ESCAPE)
 
 
-def __is_running(is_running, counter, menu_actions):
-    return is_running
-
-
-def run(actions=None, utils=None, stop_handler=None, check_is_running=None):
+def run(actions=None, utils=None, stop_handler=None):
     if actions is None:
         actions = ()
 
@@ -27,14 +23,11 @@ def run(actions=None, utils=None, stop_handler=None, check_is_running=None):
     if stop_handler is None:
         stop_handler = __stop
 
-    if check_is_running is None:
-        check_is_running = __is_running
-
     running = True
     menu_actions = ((__MENU_POINT_EXIT, stop_handler),) + actions
     counter = 0
 
-    while check_is_running(running, counter, menu_actions):
+    while utils.check_is_running(running, counter, menu_actions):
         utils.print_menu(menu_actions)
 
         action = utils.select_action(menu_actions, counter)

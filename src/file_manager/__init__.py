@@ -27,7 +27,6 @@ def run(
         default_actions=None,
         terminal=None,
         terminal_utils=None,
-        check_is_running=None
 ):
     if default_actions is None:
         default_actions = __get_default_actions()
@@ -38,7 +37,7 @@ def run(
     if terminal is None:
         terminal = src.terminal
 
-    terminal.run(default_actions + extra_actions, utils=terminal_utils, check_is_running=check_is_running)
+    terminal.run(default_actions + extra_actions, utils=terminal_utils)
 
 
 if __name__ == '__main__':

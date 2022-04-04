@@ -2,9 +2,9 @@
 Вспомогательные функции-утилиты
 """
 
-import os
-import shutil
-import sys
+import os as __os
+import shutil as __shutil
+import sys as __sys
 
 __MESSAGE_EMPTY_ANSWER = 'Вы ничего не указали'
 __MESSAGE_NOT_FOUND = 'Файл или папка не найдены по указанному пути.'
@@ -15,15 +15,19 @@ __FORMAT_FILE_NAME = '{}.txt'
 
 __ignored_files = ['README.md', '.gitignore']
 
-__ROOT_PATH = os.path.normpath(
-    os.path.join(
-        os.path.commonpath([
-            os.getcwd(),
-            os.path.normpath(os.path.join(__file__, '../../../'))
+__ROOT_PATH = __os.path.normpath(
+    __os.path.join(
+        __os.path.commonpath([
+            __os.getcwd(),
+            __os.path.normpath(__os.path.join(__file__, '../../../'))
         ]),
         'data'
     )
 )
+
+
+def check_is_running(running, counter, actions):
+    return running
 
 
 def get_root_path():
@@ -31,11 +35,11 @@ def get_root_path():
 
 
 def get_platform():
-    return sys.platform
+    return __sys.platform
 
 
 def resolve_path(name='', root_path=get_root_path()):
-    return os.path.join(root_path, name)
+    return __os.path.join(root_path, name)
 
 
 def resolve_file_path(name='', root_path=get_root_path()):
@@ -44,26 +48,26 @@ def resolve_file_path(name='', root_path=get_root_path()):
 
 def listdir(name='', root_path=get_root_path()):
     path = resolve_path(name, root_path=root_path)
-    return os.listdir(path)
+    return __os.listdir(path)
 
 
 def isfile(path=''):
-    return os.path.isfile(path)
+    return __os.path.isfile(path)
 
 
 def isdir(path=''):
-    return os.path.isdir(path)
+    return __os.path.isdir(path)
 
 
 def is_exists(path):
-    return os.path.exists(path)
+    return __os.path.exists(path)
 
 
 def make_dir(name='', root_path=get_root_path()):
     path = resolve_path(name, root_path=root_path)
 
     if not is_exists(path):
-        os.makedirs(path)
+        __os.makedirs(path)
 
 
 def remove(name='', root_path=get_root_path()):
@@ -73,31 +77,31 @@ def remove(name='', root_path=get_root_path()):
         to_terminal(__MESSAGE_NOT_FOUND)
         return
 
-    os.remove(path)
+    __os.remove(path)
 
 
 def rmdir(name='', root_path=get_root_path()):
     path = resolve_path(name, root_path=root_path)
-    return os.rmdir(path)
+    return __os.rmdir(path)
 
 
 def rmtree(name='', root_path=get_root_path()):
     path = resolve_path(name, root_path=root_path)
-    return shutil.rmtree(path)
+    return __shutil.rmtree(path)
 
 
 def copy2(path_from, path_to):
-    return shutil.copy2(path_from, path_to)
+    return __shutil.copy2(path_from, path_to)
 
 
 def copytree(path_from, path_to):
-    return shutil.copytree(path_from, path_to)
+    return __shutil.copytree(path_from, path_to)
 
 
 def get_list_dir(show_directories=True, show_files=True, root_path=get_root_path()):
     list_dir = filter(
         lambda file: file not in __ignored_files,
-        os.listdir(root_path)
+        __os.listdir(root_path)
     )
 
     if not show_directories:
