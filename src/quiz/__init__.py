@@ -4,7 +4,7 @@
 
 from random import sample
 
-people_birthdays = {
+__people_birthdays = {
     'ivanov': '10.01.1988',
     'petrov': '10.02.1988',
     'sidorov': '10.03.1988',
@@ -17,7 +17,7 @@ people_birthdays = {
     'test2': '10.10.1988',
 }
 
-numbers_text = {
+__numbers_text = {
     '01': 'первое',
     '02': 'второе',
     '03': 'третье',
@@ -50,7 +50,7 @@ numbers_text = {
     '30': 'тридцатое',
 }
 
-months_text = {
+__months_text = {
     '01': 'январь',
     '02': 'февраль',
     '03': 'март',
@@ -70,16 +70,16 @@ def run():
     stop_victory = False
 
     while not stop_victory:
-        selected_people = sample(people_birthdays.keys(), 5)
+        selected_people = sample(__people_birthdays.keys(), 5)
         all_answers_count = 0
         correct_answers_count = 0
 
         for man in selected_people:
             all_answers_count += 1
 
-            if input(f'Введите дату рождения {man} ') != people_birthdays[man]:
-                day, month, year = people_birthdays[man].split('.')
-                print(f'{numbers_text[day]} {months_text[month]} {year} года')
+            if input(f'Введите дату рождения {man} ') != __people_birthdays[man]:
+                day, month, year = __people_birthdays[man].split('.')
+                print(f'{__numbers_text[day]} {__months_text[month]} {year} года')
             else:
                 print('правильно!')
                 correct_answers_count += 1

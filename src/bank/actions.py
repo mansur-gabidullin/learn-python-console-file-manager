@@ -1,61 +1,56 @@
 """
 Функционал консольного файлового менеджера
 """
-from src.utils import wrap
 
-QUESTION_CHOICE = 'Выберите пункт меню: '
-QUESTION_REFILL_AMOUNT = 'Введите сумму на сколько пополнить счет: '
-QUESTION_PURCHASE_COST = 'Введите сумму покупки: '
-QUESTION_PURCHASE_NAME = 'Введите название покупки: '
-MESSAGE_REFILL_ACTION = 'пополнение'
-MESSAGE_PURCHASE = 'покупка'
-MESSAGE_WRONG_ACTION_CHOICE = 'Неверный пункт меню'
-MESSAGE_REMAINING_AMOUNT = 'Денег не хватает!'
-FORMAT_PATTERN_LOG_HISTORY = '{:+.2f}: {}'
-FORMAT_PATTERN_LOG_PURCHASE = '{}: {}'
-FORMAT_PATTERN_MENU_ITEM = '{}. {}'
+__QUESTION_CHOICE = 'Выберите пункт меню: '
+__QUESTION_REFILL_AMOUNT = 'Введите сумму на сколько пополнить счет: '
+__QUESTION_PURCHASE_COST = 'Введите сумму покупки: '
+__QUESTION_PURCHASE_NAME = 'Введите название покупки: '
+__MESSAGE_REFILL_ACTION = 'пополнение'
+__MESSAGE_PURCHASE = 'покупка'
+__MESSAGE_WRONG_ACTION_CHOICE = 'Неверный пункт меню'
+__MESSAGE_REMAINING_AMOUNT = 'Денег не хватает!'
+__FORMAT_PATTERN_LOG_HISTORY = '{:+.2f}: {}'
+__FORMAT_PATTERN_LOG_PURCHASE = '{}: {}'
+__FORMAT_PATTERN_MENU_ITEM = '{}. {}'
 
 
-def get_amount(journal):
+def __get_amount(journal):
     return sum((i[0] for i in journal))
 
 
-def refill(journal):
-    print()
-    refill_amount = float(input(QUESTION_REFILL_AMOUNT))
-    journal.append((refill_amount, MESSAGE_REFILL_ACTION))
+def refill(terminal, journal):
+    terminal.to_terminal()
+    refill_amount = float(terminal.from_terminal(__QUESTION_REFILL_AMOUNT))
+    journal.append((refill_amount, __MESSAGE_REFILL_ACTION))
 
 
-def purchase(journal):
-    print()
-    remaining_amount = get_amount(journal)
+def purchase(terminal, journal):
+    terminal.to_terminal()
+    remaining_amount = __get_amount(journal)
 
     if remaining_amount == 0:
-        print(MESSAGE_REMAINING_AMOUNT)
+        terminal.to_terminal(__MESSAGE_REMAINING_AMOUNT)
         return
 
-    cost = float(input(QUESTION_PURCHASE_COST))
+    cost = float(terminal.from_terminal(__QUESTION_PURCHASE_COST))
 
     if cost > remaining_amount:
-        print()
-        print(MESSAGE_REMAINING_AMOUNT)
+        terminal.to_terminal()
+        terminal.to_terminal(__MESSAGE_REMAINING_AMOUNT)
         return
 
-    print()
-    purchase_name = input(QUESTION_PURCHASE_NAME)
-    journal.append((-cost, FORMAT_PATTERN_LOG_PURCHASE.format(MESSAGE_PURCHASE, purchase_name)))
+    terminal.to_terminal()
+    purchase_name = terminal.from_terminal(__QUESTION_PURCHASE_NAME)
+    journal.append((-cost, __FORMAT_PATTERN_LOG_PURCHASE.format(__MESSAGE_PURCHASE, purchase_name)))
 
 
-def history(journal):
-    print()
-    remaining_amount = get_amount(journal)
+def history(terminal, journal):
+    terminal.to_terminal()
+    remaining_amount = __get_amount(journal)
 
     for amount, description in journal:
-        print(FORMAT_PATTERN_LOG_HISTORY.format(amount, description))
+        terminal.to_terminal(__FORMAT_PATTERN_LOG_HISTORY.format(amount, description))
 
-    print('_' * 25)
-    print(remaining_amount)
-
-
-def inject_journal_to_actions(actions, journal):
-    return tuple((description, wrap(handler, journal)) for description, handler in actions)
+    terminal.to_terminal('_' * 25)
+    terminal.to_terminal(remaining_amount)

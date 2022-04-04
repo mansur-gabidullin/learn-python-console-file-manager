@@ -2,131 +2,119 @@
 Функционал консольного файлового менеджера
 """
 
-import os
-import shutil
-import sys
-
-from src.utils import ask_user, ask_paths
-
-ROOT_PATH = os.path.normpath(
-    os.path.join(
-        os.path.commonpath([
-            os.getcwd(),
-            os.path.normpath(os.path.join(__file__, '../../../'))
-        ]),
-        'data'
-    )
-)
-
-DEVELOPER = 'Мансур Габидуллин'
-
-ignored_files = ['README.md', '.gitignore']
+__DEVELOPER = 'Мансур Габидуллин'
 
 
-def view(show_directories=True, show_files=True):
-    content = filter(
-        lambda file: file not in ignored_files,
-        os.listdir(ROOT_PATH)
-    )
-
-    if not show_directories:
-        content = filter(
-            lambda file: not os.path.isdir(os.path.join(ROOT_PATH, file)),
-            content
-        )
-
-    if not show_files:
-        content = filter(
-            lambda file: not os.path.isfile(os.path.join(ROOT_PATH, file)),
-            content
-        )
-
-    print(tuple(content))
+def view(terminal, show_directories=True, show_files=True):
+    content = terminal.get_list_dir(show_directories=show_directories, show_files=show_files)
+    terminal.to_terminal(tuple(content))
 
 
-def create_file():
-    name = ask_user('Укажите имя файла: ')
+def create_file(terminal):
+    name = terminal.ask_user('Укажите имя файла: ')
 
     if not name:
         return
 
-    content = ask_user('Укажите содержимое файла: ')
+    content = terminal.ask_user('Укажите содержимое файла: ')
 
-    with open(os.path.join(ROOT_PATH, f'{name}.txt'), 'x') as f:
-        f.write(content)
+    if not content:
+        return
+
+    terminal.save(name, content, root_path=terminal.get_root_path())
 
 
-def read_file():
-    name = ask_user('Укажите имя файла: ')
+def read_file(terminal):
+    name = terminal.ask_user('Укажите имя файла: ')
 
     if not name:
         return
 
-    with open(os.path.join(ROOT_PATH, name), 'r') as f:
-        print(f.read())
+    terminal.to_terminal(terminal.read(name, root_path=terminal.get_root_path()))
 
 
-def create_dir():
-    name = ask_user('Укажите имя папки: ')
+def create_dir(terminal):
+    name = terminal.ask_user('Укажите имя папки: ')
 
     if not name:
         return
 
-    directory = os.path.join(ROOT_PATH, name)
-
-    if not os.path.exists(directory):
-        os.makedirs(directory)
+    terminal.make_dir(name, root_path=terminal.get_root_path())
 
 
-def remove():
-    path = ask_user('Укажите путь к папке или файлу: ')
+def remove(terminal):
+    name = terminal.ask_user('Укажите название папки или файла: ')
 
-    if not path:
+    if not name:
         return
 
-    path = os.path.join(ROOT_PATH, path)
+    root_path = terminal.get_root_path()
 
-    is_file = os.path.isfile(path)
-    is_dir = os.path.isdir(path)
+    is_dir = terminal.isdir(terminal.resolve_path(name, root_path=root_path))
+    is_file = terminal.isfile(terminal.resolve_file_path(name, root_path=root_path))
 
     if not is_file and not is_dir:
-        print('Файл или папка не найдены по указанному пути.')
+        terminal.to_terminal('Файл или папка не найдены по указанному пути.')
         return
 
     if is_file:
-        os.remove(path)
+        terminal.remove(name, root_path=root_path)
         return
 
-    if len(os.listdir(path)) == 0:
-        os.rmdir(path)
+    if len(terminal.listdir(name, root_path=root_path)) == 0:
+        terminal.rmdir(name, root_path=root_path)
         return
 
-    answer = ask_user('Папка не пустая. Вы уверены что хотите удалить папку и всё её содержимое? (да/НЕТ)')
+    answer = terminal.ask_user('Папка не пустая. Вы уверены что хотите удалить папку и всё её содержимое? (да/НЕТ): ')
+    answer = answer.strip().lower()
 
-    if answer.strip().lower() == 'да':
-        shutil.rmtree(path)
+    if answer == 'да' or answer == 'yes':
+        terminal.rmtree(name, root_path=root_path)
 
 
-def copy():
-    path_from, path_to, is_file, is_dir = ask_paths(
-        'Укажите путь к папке или файлу, для копирования: ',
-        'Укажите путь, куда вы хотите скопировать: ',
-        root_path=ROOT_PATH
-    )
+def copy(terminal):
+    root_path = terminal.get_root_path()
+    is_file_copying = False
 
-    if not is_file and not is_dir:
+    name_from = terminal.ask_user('Укажите название папки или файла, для копирования: ')
+
+    if not name_from:
         return
 
-    if is_file:
-        shutil.copy2(path_from, path_to)
+    path_from = terminal.resolve_path(name_from, root_path=root_path)
+
+    if not terminal.isdir(path_from):
+        path_from = terminal.resolve_file_path(name_from, root_path=root_path)
+
+    if terminal.isfile(path_from):
+        is_file_copying = True
+
+    if not path_from:
         return
 
-    shutil.copytree(path_from, path_to)
+    name_to = terminal.ask_user('Укажите название, куда вы хотите скопировать: ')
+
+    if not name_to:
+        return
+
+    if is_file_copying:
+        path_to = terminal.resolve_file_path(name_to, root_path=root_path)
+    else:
+        path_to = terminal.resolve_path(name_to, root_path=root_path)
+
+    if not path_to:
+        return
+
+    if is_file_copying:
+        terminal.copy2(path_from, path_to)
+        return
+
+    terminal.copytree(path_from, path_to)
 
 
-def info(show_platform=True, show_developer=True):
+def info(terminal, show_platform=True, show_developer=True):
     if show_platform:
-        print(sys.platform)
+        terminal.to_terminal(terminal.get_platform())
 
     if show_developer:
-        print(DEVELOPER)
+        terminal.to_terminal(__DEVELOPER)
