@@ -127,7 +127,7 @@ def read(name, root_path=get_root_path()):
     path = resolve_file_path(name, root_path=root_path)
 
     if not is_exists(path):
-        return ''
+        return
 
     with open(path, 'r') as f:
         return f.read()
@@ -146,7 +146,7 @@ def print_menu(actions):
         to_terminal(__FORMAT_PATTERN_MENU_ITEM.format(i, action[0]))
 
 
-def select_action(actions):
+def select_action(actions, counter):
     actions_count = len(actions)
     selected_action = None
 

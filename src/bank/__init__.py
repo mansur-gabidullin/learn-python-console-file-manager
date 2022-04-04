@@ -3,7 +3,7 @@
 """
 
 import src.terminal
-from src.bank.actions import *
+from src.bank.utils import *
 
 __DESCRIPTION_REFILL = 'пополнение счета'
 __DESCRIPTION_PURCHASE = 'покупка'
@@ -29,11 +29,31 @@ def __inject_journal_to_actions(initial_actions, journal):
     return tuple((description, __wrap(handler, journal)) for description, handler in initial_actions)
 
 
-def run(terminal=src.terminal, extra_actions=(), journal=None):
+def run(
+        extra_actions=None,
+        journal=None,
+        default_actions=None,
+        terminal=None,
+        terminal_helpers=None,
+        check_is_running=None
+):
+    if default_actions is None:
+        default_actions = __get_default_actions()
+
+    if extra_actions is None:
+        extra_actions = ()
+
+    if terminal is None:
+        terminal = src.terminal
+
     if journal is None:
         journal = [(__INITIAL_AMOUNT, __DESCRIPTION_OPEN)]
 
-    terminal.run(__inject_journal_to_actions(__get_default_actions() + extra_actions, journal))
+    terminal.run(
+        __inject_journal_to_actions(default_actions + extra_actions, journal),
+        helpers=terminal_helpers,
+        check_is_running=check_is_running
+    )
 
 
 if __name__ == '__main__':

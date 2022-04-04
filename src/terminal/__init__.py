@@ -1,7 +1,7 @@
 """
 Терминал
 """
-import src.terminal.helpers as terminal_helpers
+import src.terminal.utils as terminal_helpers
 
 __MESSAGE_ESCAPE = 'До встречи!'
 __MESSAGE_PRESS_ANY_KEY = 'Нажмите клавишу ВВОД, чтобы продолжить...'
@@ -13,19 +13,37 @@ def __stop(terminal):
     terminal.to_terminal(__MESSAGE_ESCAPE)
 
 
-def run(actions=(), terminal=terminal_helpers):
+def __is_running(is_running, counter, menu_actions):
+    return is_running
+
+
+def run(actions=None, helpers=None, stop_handler=None, check_is_running=None):
+    if actions is None:
+        actions = ()
+
+    if helpers is None:
+        helpers = terminal_helpers
+
+    if stop_handler is None:
+        stop_handler = __stop
+
+    if check_is_running is None:
+        check_is_running = __is_running
+
     running = True
-    menu_actions = ((__MENU_POINT_EXIT, __stop),) + actions
+    menu_actions = ((__MENU_POINT_EXIT, stop_handler),) + actions
+    counter = 0
 
-    while running:
-        terminal.print_menu(menu_actions)
+    while check_is_running(running, counter, menu_actions):
+        helpers.print_menu(menu_actions)
 
-        action = terminal.select_action(menu_actions)
+        action = helpers.select_action(menu_actions, counter)
         _, handler = action
 
-        handler(terminal)
+        handler(helpers)
+        counter += 1
 
-        if handler == __stop:
+        if handler == stop_handler:
             running = False
             continue
 

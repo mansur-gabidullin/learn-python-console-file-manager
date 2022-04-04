@@ -3,27 +3,42 @@
 """
 
 import src.terminal
-from src.file_manager.actions import *
+import src.file_manager.utils as utils
 
 
 def __get_default_actions():
     return (
-        ('просмотр содержимого рабочей директории', view),
-        ('посмотреть только папки', lambda *args, **kwargs: view(*args, **kwargs, show_files=False)),
-        ('посмотреть только файлы', lambda *args, **kwargs: view(*args, **kwargs, show_directories=False)),
-        ('посмотреть содержимое файла', read_file),
-        ('создать файл', create_file),
-        ('создать папку', create_dir),
-        ('удалить (файл/папку)', remove),
-        ('копировать (файл/папку)', copy),
+        ('просмотр содержимого рабочей директории', utils.view),
+        ('посмотреть только папки', lambda *args, **kwargs: utils.view(*args, **kwargs, show_files=False)),
+        ('посмотреть только файлы', lambda *args, **kwargs: utils.view(*args, **kwargs, show_directories=False)),
+        ('посмотреть содержимое файла', utils.read_file),
+        ('создать файл', utils.create_file),
+        ('создать папку', utils.create_dir),
+        ('удалить (файл/папку)', utils.remove),
+        ('копировать (файл/папку)', utils.copy),
         ('просмотр информации об операционной системе',
-         lambda *args, **kwargs: info(*args, **kwargs, show_developer=False)),
-        ('создатель программы', lambda *args, **kwargs: info(*args, **kwargs, show_platform=False)),
+         lambda *args, **kwargs: utils.info(*args, **kwargs, show_developer=False)),
+        ('создатель программы', lambda *args, **kwargs: utils.info(*args, **kwargs, show_platform=False)),
     )
 
 
-def run(terminal=src.terminal, extra_actions=()):
-    terminal.run(__get_default_actions() + extra_actions)
+def run(
+        extra_actions=None,
+        default_actions=None,
+        terminal=None,
+        terminal_helpers=None,
+        check_is_running=None
+):
+    if default_actions is None:
+        default_actions = __get_default_actions()
+
+    if extra_actions is None:
+        extra_actions = ()
+
+    if terminal is None:
+        terminal = src.terminal
+
+    terminal.run(default_actions + extra_actions, helpers=terminal_helpers, check_is_running=check_is_running)
 
 
 if __name__ == '__main__':

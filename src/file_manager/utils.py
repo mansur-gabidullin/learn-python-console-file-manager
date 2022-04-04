@@ -30,7 +30,15 @@ def read_file(terminal):
     if not name:
         return
 
-    terminal.to_terminal(terminal.read(name, root_path=terminal.get_root_path()))
+    root_path = terminal.get_root_path()
+
+    content = terminal.read(name, root_path=root_path)
+
+    if content is None:
+        terminal.to_terminal('Файл не найден!')
+        return
+
+    terminal.to_terminal(content)
 
 
 def create_dir(terminal):

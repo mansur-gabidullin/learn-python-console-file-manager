@@ -89,3 +89,7 @@ def run():
 
         if input('Повторить? да/нет ') != 'да':
             stop_victory = True
+
+
+if __name__ == '__main__':
+    run()

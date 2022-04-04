@@ -15,7 +15,7 @@ __FORMAT_PATTERN_LOG_PURCHASE = '{}: {}'
 __FORMAT_PATTERN_MENU_ITEM = '{}. {}'
 
 
-def __get_amount(journal):
+def get_amount(journal):
     return sum((i[0] for i in journal))
 
 
@@ -27,7 +27,7 @@ def refill(terminal, journal):
 
 def purchase(terminal, journal):
     terminal.to_terminal()
-    remaining_amount = __get_amount(journal)
+    remaining_amount = get_amount(journal)
 
     if remaining_amount == 0:
         terminal.to_terminal(__MESSAGE_REMAINING_AMOUNT)
@@ -47,7 +47,7 @@ def purchase(terminal, journal):
 
 def history(terminal, journal):
     terminal.to_terminal()
-    remaining_amount = __get_amount(journal)
+    remaining_amount = get_amount(journal)
 
     for amount, description in journal:
         terminal.to_terminal(__FORMAT_PATTERN_LOG_HISTORY.format(amount, description))
