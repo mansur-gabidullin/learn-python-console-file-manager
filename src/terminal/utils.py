@@ -15,15 +15,7 @@ __FORMAT_FILE_NAME = '{}.txt'
 
 __ignored_files = ['README.md', '.gitignore']
 
-__ROOT_PATH = __os.path.normpath(
-    __os.path.join(
-        __os.path.commonpath([
-            __os.getcwd(),
-            __os.path.normpath(__os.path.join(__file__, '../../../'))
-        ]),
-        'data'
-    )
-)
+__ROOT_PATH = __os.path.normpath(__os.path.join(__file__, '../../../data'))
 
 
 def check_is_running(running, counter, actions):

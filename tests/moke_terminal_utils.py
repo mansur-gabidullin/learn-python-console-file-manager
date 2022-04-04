@@ -3,7 +3,7 @@ from src.terminal.utils import *
 
 def get_root_path():
     import os
-    return os.path.join(os.getcwd(), 'test_data')
+    return os.path.normpath(os.path.join(__file__, '../test_data'))
 
 
 def check_is_running(running, counter, actions):
