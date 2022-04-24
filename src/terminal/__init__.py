@@ -1,35 +1,46 @@
 """
 Терминал
 """
-from src.terminal.menu import *
+import src.terminal.utils as terminal_utils
 
-MESSAGE_ESCAPE = 'До встречи!'
-MESSAGE_PRESS_ANY_KEY = 'Нажмите клавишу ВВОД, чтобы продолжить...'
-MENU_POINT_EXIT = 'Выход'
-
-
-def __stop():
-    print()
-    print(MESSAGE_ESCAPE)
+__MESSAGE_ESCAPE = 'До встречи!'
+__MESSAGE_PRESS_ANY_KEY = 'Нажмите клавишу ВВОД, чтобы продолжить...'
+__MENU_POINT_EXIT = 'Выход'
 
 
-def run(actions=()):
+def __stop(terminal):
+    terminal.to_terminal()
+    terminal.to_terminal(__MESSAGE_ESCAPE)
+
+
+def run(actions=None, utils=None, stop_handler=None):
+    if actions is None:
+        actions = ()
+
+    if utils is None:
+        utils = terminal_utils
+
+    if stop_handler is None:
+        stop_handler = __stop
+
     running = True
-    menu_actions = ((MENU_POINT_EXIT, __stop),) + actions
+    menu_actions = ((__MENU_POINT_EXIT, stop_handler),) + actions
+    counter = 0
 
-    while running:
-        print_menu(menu_actions)
+    while utils.check_is_running(running, counter, menu_actions):
+        utils.print_menu(menu_actions)
 
-        action = select_action(menu_actions)
+        action = utils.select_action(menu_actions, counter)
         _, handler = action
 
-        handler()
+        handler(utils)
+        counter += 1
 
-        if handler == __stop:
+        if handler == stop_handler:
             running = False
             continue
 
-        input(f'\n{MESSAGE_PRESS_ANY_KEY}\n')
+        utils.from_terminal(f'\n{__MESSAGE_PRESS_ANY_KEY}\n')
 
 
 if __name__ == '__main__':

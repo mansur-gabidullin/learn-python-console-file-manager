@@ -3,28 +3,55 @@
 """
 
 import src.terminal
-from src.bank.actions import *
+from src.bank.utils import *
 
-DESCRIPTION_REFILL = 'пополнение счета'
-DESCRIPTION_PURCHASE = 'покупка'
-DESCRIPTION_HISTORY = 'история покупок'
-DESCRIPTION_OPEN = 'открытие счета'
-INITIAL_AMOUNT = 0
+__DESCRIPTION_REFILL = 'пополнение счета'
+__DESCRIPTION_PURCHASE = 'покупка'
+__DESCRIPTION_HISTORY = 'история покупок'
+__DESCRIPTION_OPEN = 'открытие счета'
+__INITIAL_AMOUNT = 0
 
 
-def get_default_actions():
+def __get_default_actions():
     return (
-        (DESCRIPTION_REFILL, refill),
-        (DESCRIPTION_PURCHASE, purchase),
-        (DESCRIPTION_HISTORY, history),
+        (__DESCRIPTION_REFILL, refill),
+        (__DESCRIPTION_PURCHASE, purchase),
+        (__DESCRIPTION_HISTORY, history),
     )
 
 
-def run(terminal=src.terminal, default_actions=get_default_actions(), journal=None):
-    if journal is None:
-        journal = [(INITIAL_AMOUNT, DESCRIPTION_OPEN)]
+def __wrap(fn, *wrapper_args, **wrapper_kwargs):
+    """Даёт возможность вызвать функцию с заранее определёнными параметрами"""
+    return lambda *args, **kwargs: fn(*args, *wrapper_args, **kwargs, **wrapper_kwargs)
 
-    terminal.run(inject_journal_to_actions(default_actions, journal))
+
+def __inject_journal_to_actions(initial_actions, journal):
+    return tuple((description, __wrap(handler, journal)) for description, handler in initial_actions)
+
+
+def run(
+        extra_actions=None,
+        journal=None,
+        default_actions=None,
+        terminal=None,
+        terminal_utils=None,
+):
+    if default_actions is None:
+        default_actions = __get_default_actions()
+
+    if extra_actions is None:
+        extra_actions = ()
+
+    if terminal is None:
+        terminal = src.terminal
+
+    if journal is None:
+        journal = [(__INITIAL_AMOUNT, __DESCRIPTION_OPEN)]
+
+    terminal.run(
+        __inject_journal_to_actions(default_actions + extra_actions, journal),
+        utils=terminal_utils,
+    )
 
 
 if __name__ == '__main__':

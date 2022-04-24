@@ -5,3 +5,8 @@ Console file manager
 ```
 python __init__.py
 ```
+
+для запуска тестов нужно в терминале (консоли) выполнить команду:
+```
+python -m pytest
+``` 
