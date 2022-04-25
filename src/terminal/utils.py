@@ -1,7 +1,7 @@
 """
 Вспомогательные функции-утилиты
 """
-
+import json
 import os as __os
 import shutil as __shutil
 import sys as __sys
@@ -11,7 +11,8 @@ __MESSAGE_NOT_FOUND = 'Файл или папка не найдены по ук�
 __MESSAGE_WRONG_ACTION_CHOICE = 'Неверный пункт меню!'
 __QUESTION_CHOICE = 'Выберите пункт меню: '
 __FORMAT_PATTERN_MENU_ITEM = '{}. {}'
-__FORMAT_FILE_NAME = '{}.txt'
+__FORMAT_TEXT_FILE_NAME = '{}.txt'
+__FORMAT_JSON_FILE_NAME = '{}.json'
 
 __ignored_files = ['README.md', '.gitignore']
 
@@ -35,7 +36,11 @@ def resolve_path(name='', root_path=get_root_path()):
 
 
 def resolve_file_path(name='', root_path=get_root_path()):
-    return resolve_path(__FORMAT_FILE_NAME.format(name), root_path)
+    return resolve_path(__FORMAT_TEXT_FILE_NAME.format(name), root_path)
+
+
+def resolve_json_file_path(name='', root_path=get_root_path()):
+    return resolve_path(__FORMAT_JSON_FILE_NAME.format(name), root_path)
 
 
 def listdir(name='', root_path=get_root_path()):
@@ -121,18 +126,37 @@ def from_terminal(*args, **kwargs):
 
 def read(name, root_path=get_root_path()):
     path = resolve_file_path(name, root_path=root_path)
+    return read_file(path)
 
+
+def read_json(name, root_path=get_root_path()):
+    path = resolve_json_file_path(name, root_path=root_path)
+    content = read_file(path)
+    if not content:
+        return
+    return json.loads(content)
+
+
+def read_file(path):
     if not is_exists(path):
         return
 
-    with open(path, 'r') as f:
+    with open(path, 'rt', encoding='utf-8') as f:
         return f.read()
 
 
 def save(name, content, root_path=get_root_path()):
     path = resolve_file_path(name, root_path=root_path)
+    save_file(path, content)
 
-    with open(path, 'x') as f:
+
+def save_json(name, content, root_path=get_root_path()):
+    path = resolve_json_file_path(name, root_path=root_path)
+    save_file(path, json.dumps(content, ensure_ascii=False))
+
+
+def save_file(path, content):
+    with open(path, 'wt', encoding='utf-8') as f:
         f.write(content)
 
 
