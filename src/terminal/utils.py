@@ -69,7 +69,10 @@ def make_dir(name='', root_path=get_root_path()):
 
 def remove(name='', root_path=get_root_path()):
     path = resolve_file_path(name, root_path=root_path)
+    remove_file(path)
 
+
+def remove_file(path):
     if not is_exists(path):
         to_terminal(__MESSAGE_NOT_FOUND)
         return
@@ -131,10 +134,12 @@ def read(name, root_path=get_root_path()):
 
 def read_json(name, root_path=get_root_path()):
     path = resolve_json_file_path(name, root_path=root_path)
-    content = read_file(path)
-    if not content:
+
+    if not is_exists(path):
         return
-    return json.loads(content)
+
+    with open(path, 'rt', encoding='utf-8') as f:
+        return json.load(f)
 
 
 def read_file(path):
@@ -152,7 +157,9 @@ def save(name, content, root_path=get_root_path()):
 
 def save_json(name, content, root_path=get_root_path()):
     path = resolve_json_file_path(name, root_path=root_path)
-    save_file(path, json.dumps(content, ensure_ascii=False))
+
+    with open(path, 'wt', encoding='utf-8') as f:
+        json.dump(content, f, ensure_ascii=False)
 
 
 def save_file(path, content):

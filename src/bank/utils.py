@@ -20,7 +20,7 @@ def get_amount(journal):
     return sum((i[0] for i in journal))
 
 
-def refill(terminal, journal, on_journal_change):
+def refill(terminal, journal, on_journal_change=lambda _: None):
     terminal.to_terminal()
     answer = terminal.ask_user(__QUESTION_REFILL_AMOUNT)
 
@@ -37,7 +37,7 @@ def refill(terminal, journal, on_journal_change):
     on_journal_change(journal)
 
 
-def purchase(terminal, journal, on_journal_change):
+def purchase(terminal, journal, on_journal_change=lambda _: None):
     terminal.to_terminal()
     remaining_amount = get_amount(journal)
 
@@ -58,7 +58,7 @@ def purchase(terminal, journal, on_journal_change):
     on_journal_change(journal)
 
 
-def history(terminal, journal, on_journal_change):
+def history(terminal, journal, on_journal_change=lambda _: None):
     terminal.to_terminal()
     remaining_amount = get_amount(journal)
 

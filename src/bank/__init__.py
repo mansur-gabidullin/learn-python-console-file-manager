@@ -35,7 +35,7 @@ def run(
         default_actions=None,
         terminal=None,
         terminal_utils=None,
-        on_journal_change=lambda: None
+        on_journal_change=lambda _: None
 ):
     if default_actions is None:
         default_actions = __get_default_actions()
