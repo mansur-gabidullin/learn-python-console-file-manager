@@ -184,11 +184,14 @@ def select_action(actions, counter):
     return selected_action
 
 
-def ask_user(question, empty_warning=__MESSAGE_EMPTY_ANSWER):
+def ask_user(question, default=None, empty_warning=__MESSAGE_EMPTY_ANSWER):
     answer = from_terminal(question)
 
     if answer.strip() == '':
-        to_terminal(empty_warning)
-        return ''
+        if not default:
+            to_terminal(empty_warning)
+            return ''
+
+        return default
 
     return answer

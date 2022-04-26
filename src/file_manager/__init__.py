@@ -9,6 +9,7 @@ import src.file_manager.utils as utils
 def __get_default_actions():
     return (
         ('просмотр содержимого рабочей директории', utils.view),
+        ('сохранить содержимое рабочей директории в файл', utils.save_dir_content),
         ('посмотреть только папки', lambda *args, **kwargs: utils.view(*args, **kwargs, show_files=False)),
         ('посмотреть только файлы', lambda *args, **kwargs: utils.view(*args, **kwargs, show_directories=False)),
         ('посмотреть содержимое файла', utils.read_file),
