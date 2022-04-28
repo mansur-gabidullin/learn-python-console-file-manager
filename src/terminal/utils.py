@@ -179,26 +179,35 @@ def select_action(actions, counter):
 
     while not selected_action:
         to_terminal()
-        choice = from_terminal(__QUESTION_CHOICE)
-        choice = int(choice) if choice != '' else 0
+        answer = ask_user(__QUESTION_CHOICE)
 
-        if 0 <= choice < actions_count:
+        try:
+            choice = int(answer) if answer != '' else 0
+
+            if choice < 0 or choice >= actions_count:
+                raise IndexError(__MESSAGE_WRONG_ACTION_CHOICE)
+        except (IndexError, ValueError):
+            to_terminal(__MESSAGE_WRONG_ACTION_CHOICE)
+        else:
             selected_action = actions[choice]
-            continue
-
-        to_terminal(__MESSAGE_WRONG_ACTION_CHOICE)
 
     return selected_action
 
 
-def ask_user(question, default=None, empty_warning=__MESSAGE_EMPTY_ANSWER):
+def ask_user(question, default=None, empty_warning=__MESSAGE_EMPTY_ANSWER, transform=lambda _: _):
     answer = from_terminal(question)
+    result = None
 
-    if answer.strip() == '':
-        if not default:
+    try:
+        if answer.strip() == '':
+            if default:
+                raise ValueError(empty_warning)
             to_terminal(empty_warning)
-            return ''
-
-        return default
-
-    return answer
+            result = transform('')
+        result = transform(answer)
+    except ValueError:
+        result = default
+    except Exception:
+        result = ''
+    finally:
+        return result
