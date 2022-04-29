@@ -3,11 +3,20 @@
 """
 
 __DEVELOPER = 'Мансур Габидуллин'
+__LIST_DIR_FILE_NAME = 'listdir'
 
 
 def view(terminal, show_directories=True, show_files=True):
     content = terminal.get_list_dir(show_directories=show_directories, show_files=show_files)
-    terminal.to_terminal(tuple(content))
+    terminal.to_terminal(content)
+
+
+def save_dir_content(terminal):
+    content = 'files: ' + ', '.join(terminal.get_list_dir(show_directories=False))
+    content += '\ndirs: ' + ', '.join(terminal.get_list_dir(show_files=False))
+    name = terminal.ask_user('Укажите имя файла [' + __LIST_DIR_FILE_NAME + ']: ', default=__LIST_DIR_FILE_NAME)
+    terminal.save(name or __LIST_DIR_FILE_NAME, content)
+    terminal.to_terminal(content)
 
 
 def create_file(terminal):

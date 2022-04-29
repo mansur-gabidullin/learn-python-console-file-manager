@@ -29,8 +29,8 @@ def test_bank_journal():
     test_journal = __get_initial_journal()
 
     test_actions = (
-        ('пополнить 50', lambda terminal, journal: journal.append((50, 'пришла зарплата'))),
-        ('купить на 30', lambda terminal, journal: journal.append((-30, 'купил яблоки'))),
+        ('пополнить 50', lambda terminal, journal, _: journal.append((50, 'пришла зарплата'))),
+        ('купить на 30', lambda terminal, journal, _: journal.append((-30, 'купил яблоки'))),
     )
 
     bank.run(

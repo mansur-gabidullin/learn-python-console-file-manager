@@ -25,8 +25,8 @@ def __wrap(fn, *wrapper_args, **wrapper_kwargs):
     return lambda *args, **kwargs: fn(*args, *wrapper_args, **kwargs, **wrapper_kwargs)
 
 
-def __inject_journal_to_actions(initial_actions, journal):
-    return tuple((description, __wrap(handler, journal)) for description, handler in initial_actions)
+def __inject_journal_to_actions(initial_actions, journal, on_journal_change):
+    return tuple((description, __wrap(handler, journal, on_journal_change)) for description, handler in initial_actions)
 
 
 def run(
@@ -35,6 +35,7 @@ def run(
         default_actions=None,
         terminal=None,
         terminal_utils=None,
+        on_journal_change=lambda _: None
 ):
     if default_actions is None:
         default_actions = __get_default_actions()
@@ -49,7 +50,7 @@ def run(
         journal = [(__INITIAL_AMOUNT, __DESCRIPTION_OPEN)]
 
     terminal.run(
-        __inject_journal_to_actions(default_actions + extra_actions, journal),
+        __inject_journal_to_actions(default_actions + extra_actions, journal, on_journal_change),
         utils=terminal_utils,
     )
 
