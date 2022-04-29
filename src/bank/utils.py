@@ -45,7 +45,7 @@ def purchase(terminal, journal, on_journal_change=lambda _: None):
         terminal.to_terminal(__MESSAGE_REMAINING_AMOUNT)
         return
 
-    cost = float(terminal.from_terminal(__QUESTION_PURCHASE_COST))
+    cost = terminal.ask_user(__QUESTION_PURCHASE_COST, default=0, transform=float)
 
     if cost > remaining_amount:
         terminal.to_terminal()
@@ -53,7 +53,7 @@ def purchase(terminal, journal, on_journal_change=lambda _: None):
         return
 
     terminal.to_terminal()
-    purchase_name = terminal.from_terminal(__QUESTION_PURCHASE_NAME)
+    purchase_name = terminal.ask_user(__QUESTION_PURCHASE_NAME)
     journal.append((-cost, __FORMAT_PATTERN_LOG_PURCHASE.format(__MESSAGE_PURCHASE, purchase_name)))
     on_journal_change(journal)
 
